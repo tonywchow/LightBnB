@@ -14,6 +14,8 @@ client.connect().then(() => {
   console.log("Connected to database!");
 });
 
+//The code below confirms the connection to the database. The front-end is using data from the /json directory, the app may appear to work even if the connection to the database is not successful.
+
 // client.query(`SELECT title FROM properties LIMIT 10;`).then((response) => {
 //   console.log(response);
 // });
