@@ -1,5 +1,22 @@
 const properties = require("./json/properties.json");
 const users = require("./json/users.json");
+const { Client } = require("pg");
+
+const client = new Client({
+  user: "vagrant",
+  password: "123",
+  host: "localhost",
+  database: "lightbnb",
+  port: 5432,
+});
+
+client.connect().then(() => {
+  console.log("Connected to database!");
+});
+
+// client.query(`SELECT title FROM properties LIMIT 10;`).then((response) => {
+//   console.log(response);
+// });
 
 /// Users
 
