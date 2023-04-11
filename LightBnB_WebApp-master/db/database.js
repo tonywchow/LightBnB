@@ -78,12 +78,15 @@ const getAllReservations = function (guest_id, limit = 10) {
  * @param {*} limit The number of results to return.
  * @return {Promise<[{}]>}  A promise to the properties.
  */
-// NOTE getAllProperties is not console logging on the browser and criteria LIMIT 10 is not met. Ask mentor about this.
+
 const getAllProperties = (options, limit = 10) => {
+  const queryString = `SELECT * FROM properties LIMIT $1`;
+  const values = [limit];
+
   return client
-    .query(`SELECT * FROM properties LIMIT $1`, [limit])
+    .query(queryString, values)
     .then((result) => {
-      console.log(result.rows);
+      console.log("hello", result.rows);
       return result.rows;
     })
     .catch((err) => {
