@@ -134,15 +134,67 @@ const getAllReservations = function (guest_id, limit = 10) {
  */
 
 const getAllProperties = (options, limit = 10) => {
-  const queryString = `SELECT * FROM properties LIMIT $1`;
-  const values = [limit];
+  // const queryString = `SELECT * FROM properties LIMIT $1`;
+  // const values = [limit];
 
-  return client
-    .query(queryString, values)
-    .then((result) => {
-      return result.rows;
-    })
-    .catch((err) => console.log("error", err.stack));
+  // return client
+  //   .query(queryString, values)
+  //   .then((result) => {
+  //     return result.rows;
+  //   })
+  //   .catch((err) => console.log("error", err.stack));
+  // 1
+  limit = 10;
+  const queryParams = [];
+  // 2
+  let queryString = `
+    SELECT properties.*, avg(property_reviews.rating) as average_rating
+    FROM properties
+    JOIN property_reviews ON properties.id = property_id
+    `;
+
+  // 3
+  if (options.city) {
+    queryParams.push(`%${options.city}%`);
+    queryString += `WHERE city ILIKE $${queryParams.length} `;
+  }
+
+  if (options.owner_id) {
+    queryParams.push(`%${options.owner_id}%`);
+    queryString += `WHERE owner_id = $${queryParams.length} `;
+  }
+
+  if (options.minimum_price_per_night && options.maximum_price_per_night) {
+    let minPennies = Number(options.minimum_price_per_night) * 100;
+    let maxPennies = Number(options.maximum_price_per_night) * 100;
+    queryParams.push(minPennies);
+    queryString += `AND cost_per_night >= $${queryParams.length} `;
+    queryParams.push(maxPennies);
+    queryString += `AND cost_per_night <= $${queryParams.length} `;
+  }
+
+  queryString += `
+    GROUP BY properties.id`;
+
+  if (options.minimum_rating) {
+    let rating = Number(options.minimum_rating);
+    queryParams.push(rating);
+    queryString += `
+    HAVING avg(property_reviews.rating) >= $${queryParams.length} `;
+  }
+
+  // 4
+  queryParams.push(limit);
+  queryString += `
+    ORDER BY cost_per_night
+    LIMIT $${queryParams.length};
+    `;
+
+  // 5
+  console.log(queryString, queryParams);
+
+  // 6
+  return client.query(queryString, queryParams).then((res) => res.rows);
 };
 
 /**
