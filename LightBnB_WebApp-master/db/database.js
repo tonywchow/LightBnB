@@ -44,7 +44,7 @@ const getUserWithEmail = function (email) {
         return null;
       }
     })
-    .catch((err) => console.log("query error", err.stack));
+    .catch((err) => console.log("error", err.stack));
 };
 
 /**
@@ -92,7 +92,7 @@ const addUser = function (user) {
       let user = result.rows[0];
       return Promise.resolve(user);
     })
-    .catch((err) => console.log("query error", err.stack));
+    .catch((err) => console.log("error", err.stack));
 };
 
 /// Reservations
@@ -121,7 +121,7 @@ const getAllReservations = function (guest_id, limit = 10) {
       console.log(user);
       return Promise.resolve(user);
     })
-    .catch((err) => console.log("query error", err.stack));
+    .catch((err) => console.log("error", err.stack));
 };
 
 /// Properties
@@ -142,7 +142,7 @@ const getAllProperties = (options, limit = 10) => {
     .then((result) => {
       return result.rows;
     })
-    .catch((err) => console.log("query error", err.stack));
+    .catch((err) => console.log("error", err.stack));
 };
 
 /**
