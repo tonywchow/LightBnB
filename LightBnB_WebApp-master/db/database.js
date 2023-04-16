@@ -1,7 +1,7 @@
 const properties = require("./json/properties.json");
 const users = require("./json/users.json");
 const { Client } = require("pg");
-
+//Creating an instance of Client to route to lightbnb database
 const client = new Client({
   user: "vagrant",
   password: "123",
@@ -10,15 +10,11 @@ const client = new Client({
   port: 5432,
 });
 
+//The code below confirms the connection to the database. The front-end is using data from the /json directory, the app may appear to work even if the connection to the database is not successful.
+
 client.connect().then(() => {
   console.log("Connected to database!");
 });
-
-//The code below confirms the connection to the database. The front-end is using data from the /json directory, the app may appear to work even if the connection to the database is not successful.
-
-// client.query(`SELECT title FROM properties LIMIT 10;`).then((response) => {
-//   console.log(response);
-// });
 
 /// Users
 
@@ -27,6 +23,7 @@ client.connect().then(() => {
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
+
 const getUserWithEmail = function (email) {
   const queryString = `
   SELECT * 
@@ -38,13 +35,12 @@ const getUserWithEmail = function (email) {
     .query(queryString, values)
     .then((result) => {
       if (result.rows) {
-        let user = result.rows[0];
-        return Promise.resolve(user);
+        return result.rows[0];
       } else {
         return null;
       }
     })
-    .catch((err) => console.log("error", err.stack));
+    .catch((error) => console.log(error));
 };
 
 /**
@@ -63,15 +59,12 @@ const getUserWithId = function (id) {
     .query(queryString, values)
     .then((result) => {
       if (result.rows) {
-        let user = result.rows[0];
-        return Promise.resolve(user);
+        return result.rows[0];
       } else {
         return null;
       }
     })
-    .catch((err) => {
-      console.log(err.message);
-    });
+    .catch((error) => console.log(error));
 };
 
 /**
@@ -89,10 +82,9 @@ const addUser = function (user) {
   return client
     .query(queryString, values)
     .then((result) => {
-      let user = result.rows[0];
-      return Promise.resolve(user);
+      return result.rows[0];
     })
-    .catch((err) => console.log("error", err.stack));
+    .catch((error) => console.log(error));
 };
 
 /// Reservations
@@ -117,11 +109,9 @@ const getAllReservations = function (guest_id, limit = 10) {
   return client
     .query(queryString, values)
     .then((result) => {
-      let user = result.rows;
-      console.log(user);
-      return Promise.resolve(user);
+      return result.rows;
     })
-    .catch((err) => console.log("error", err.stack));
+    .catch((error) => console.log(error));
 };
 
 /// Properties
@@ -136,14 +126,13 @@ const getAllReservations = function (guest_id, limit = 10) {
 const getAllProperties = (options, limit = 10) => {
   limit = 10;
   const queryParams = [];
-  // 2
+
   let queryString = `
     SELECT properties.*, avg(property_reviews.rating) as average_rating
     FROM properties
     JOIN property_reviews ON properties.id = property_id
     `;
 
-  // 3
   if (options.city) {
     queryParams.push(`%${options.city}%`);
     queryString += `WHERE city ILIKE $${queryParams.length} `;
@@ -173,18 +162,15 @@ const getAllProperties = (options, limit = 10) => {
     HAVING avg(property_reviews.rating) >= $${queryParams.length} `;
   }
 
-  // 4
   queryParams.push(limit);
   queryString += `
     ORDER BY cost_per_night
     LIMIT $${queryParams.length};
     `;
-
-  // 5
-  console.log(queryString, queryParams);
-
-  // 6
-  return client.query(queryString, queryParams).then((res) => res.rows);
+  return client
+    .query(queryString, queryParams)
+    .then((res) => res.rows)
+    .catch((error) => console.log(error));
 };
 
 /**
@@ -193,10 +179,6 @@ const getAllProperties = (options, limit = 10) => {
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function (property) {
-  // const propertyId = Object.keys(properties).length + 1;
-  // property.id = propertyId;
-  // properties[propertyId] = property;
-  // return Promise.resolve(property);
   let queryString = `
   INSERT INTO properties(
     owner_id, title, description, thumbnail_photo_url, cover_photo_url, cost_per_night, street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
@@ -223,10 +205,9 @@ const addProperty = function (property) {
   return client
     .query(queryString, values)
     .then((res) => {
-      console.log(res.rows);
       return res.rows;
     })
-    .catch((err) => console.log(err));
+    .catch((error) => console.log(error));
 };
 
 module.exports = {
