@@ -107,3 +107,6 @@
 1. Install dependencies using the `npm install` command.
 2. Start the web server using the `npm run local` command. The app will be served at <http://localhost:3000/>.
 3. Go to <http://localhost:3000/> in your browser.
+4. Install PostgreSQL and create database called lightbnb from the psql terminal using `CREATE TABLE` statement.
+5. Use `\i migrations/01_schema.sql` to add tables.
+6. Run `\i seeds/01_seeds.sql` & `\i seeds/02_seeds.sql` to add seed data to lightbnb database.
