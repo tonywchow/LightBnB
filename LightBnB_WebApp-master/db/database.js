@@ -123,6 +123,7 @@ const getAllReservations = function (guest_id, limit = 10) {
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 
+//getAllProperties
 const getAllProperties = (options, limit = 10) => {
   limit = 10;
   const queryParams = [];
@@ -139,7 +140,7 @@ const getAllProperties = (options, limit = 10) => {
   }
 
   if (options.owner_id) {
-    queryParams.push(`%${options.owner_id}%`);
+    queryParams.push(options.owner_id);
     queryString += `WHERE owner_id = $${queryParams.length} `;
   }
 
@@ -178,6 +179,8 @@ const getAllProperties = (options, limit = 10) => {
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
+
+//addProperty creates a new listing
 const addProperty = function (property) {
   let queryString = `
   INSERT INTO properties(
