@@ -16,7 +16,7 @@
 
 ### Sign Up Page
 
-!["Screenshot of Homepage"](./docs/LightBnB%20SignUp.png)
+!["Screenshot of Homepage"](./docs/LightBnB%20Sign%20Up.png)
 
 ### Registered User Page
 
