@@ -123,7 +123,7 @@ const getAllReservations = function (guest_id, limit = 10) {
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 
-//getAllProperties
+//Filters the properties if form is filled
 const getAllProperties = (options, limit = 10) => {
   limit = 10;
   const queryParams = [];
